@@ -1,7 +1,7 @@
 import telegram
 import time
 
-from token import bot_token
+from telegram_token import bot_token
 
 bot = telegram.Bot(bot_token)
 
