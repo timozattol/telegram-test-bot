@@ -1,9 +1,22 @@
 import telegram
 import time
 
-from telegram_token import bot_token
+from datetime import datetime
+
+from imgurpython import ImgurClient
+
+from tokens import bot_token
+from tokens import imgur_client_id
+from tokens import imgur_client_secret
 
 bot = telegram.Bot(bot_token)
+imgur_client = ImgurClient(imgur_client_id, imgur_client_secret)
+
+# "Snapshot" of the imgur frontpage state, 
+# at the time of the first "/imgur" request
+current_gallery = None
+current_gallery_day = None
+current_gallery_index = 0
 
 def main():
 	# Find the last fetched update id
@@ -14,7 +27,9 @@ def main():
 	else:
 		last_update_id = None
 
+	print("Starting main loop")
 
+	# Main loop
 	while(True):
 
 		updates = bot.getUpdates(offset=last_update_id, timeout=20)
@@ -33,11 +48,39 @@ def main():
 
 			last_update_id = update.update_id + 1
 
-
 def execute(message):
-	bot.sendMessage(
+	# Imgur command
+	if(message.text == "/imgur"):
+
+		img = fetchNextImgurImage()
+
+		response = img.title + "\n" + img.link if img else "No more image in gallery, shouldn't you go to work? ;)"
+
+		bot.sendMessage(
+			chat_id=message.chat_id,
+			text=response)
+	else:
+		bot.sendMessage(
 		chat_id=message.chat_id, 
-		text="Thanks for your command! Unfortunately it isn't supported yet.")
+		text="Unfortunately, your command isn't supported yet.")
+
+def fetchNextImgurImage():
+	global current_gallery, current_gallery_day, current_gallery_index
+
+	# If gallery is outdated, fetch new gallery
+	if current_gallery == None or current_gallery_day != datetime.now().date():
+		current_gallery = imgur_client.gallery()
+		current_gallery_index = 0
+		current_gallery_day = datetime.now().date()
+		print("Daily gallery loaded. Size: " + str(len(current_gallery)))
+
+	# No more image on first page
+	if current_gallery_index > len(current_gallery):
+		return None
+	else:
+		img = current_gallery[current_gallery_index]
+		current_gallery_index += 1
+		return img
 
 if __name__ == '__main__':
 	main()
