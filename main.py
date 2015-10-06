@@ -41,17 +41,25 @@ def main():
 				if(message.text[0] == '/'):
 					execute(message)
 				else:
-					bot.sendMessage(
-						chat_id=message.chat_id,
-						text='Thanks for your message: "' +
-							message.text + '"')
+					pass
 
 			last_update_id = update.update_id + 1
 
 def execute(message):
-	# Imgur command
-	if(message.text == "/imgur"):
+	helpMessage = """
+		Available commands:
+		/help --> Show this message
+		/imgur --> Fetch an image from the frontpage of imgur
+		"""
 
+	# Help command
+	if(message.text == "/help"):
+		bot.sendMessage(
+			chat_id=message.chat_id,
+			text=helpMessage)
+
+	# Imgur command
+	elif(message.text == "/imgur"):
 		img = fetchNextImgurImage()
 
 		response = img.title + "\n" + img.link if img else "No more image in gallery, shouldn't you go to work? ;)"
@@ -60,9 +68,11 @@ def execute(message):
 			chat_id=message.chat_id,
 			text=response)
 	else:
+		response = "Unfortunately, your command isn't supported yet.\n" + helpMessage
+
 		bot.sendMessage(
 		chat_id=message.chat_id, 
-		text="Unfortunately, your command isn't supported yet.")
+		text=response)
 
 def fetchNextImgurImage():
 	global current_gallery, current_gallery_day, current_gallery_index
