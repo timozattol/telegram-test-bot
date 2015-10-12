@@ -1,3 +1,5 @@
+import logging
+
 from datetime import datetime
 
 class ChatHandler:
@@ -48,6 +50,11 @@ class ChatHandler:
 			"""
 
 		self.__send_message(helpMessage)
+
+	def log(self, message):
+		log_string = "Chat #" + str(self.chat_id) + ": " + message.text
+		logging.debug(log_string)
+		print(log_string)
 
 	def execute(self, message):
 		# Message should be from this chat

@@ -2,6 +2,10 @@
 
 import telegram
 
+import logging
+
+from datetime import datetime
+
 from imgurpython import ImgurClient
 
 from tokens import bot_token
@@ -17,6 +21,10 @@ imgur_client = ImgurClient(imgur_client_id, imgur_client_secret)
 id_chat_handlers = {}
 
 def main():
+	# Set up the logging
+	logging.basicConfig(filename='logging.log', level=logging.DEBUG)
+	logging.info('== Bot started at ' + str(datetime.now()) + ' ==')
+
 	# Find the last fetched update id
 	updates = bot.getUpdates()
 
@@ -42,6 +50,8 @@ def main():
 						ChatHandler(message.chat_id, bot, imgur_client)
 
 				chat_handler = id_chat_handlers[message.chat_id]
+
+				chat_handler.log(message)
 
 				if(message.text[0] == '/'):
 					chat_handler.execute(message)
