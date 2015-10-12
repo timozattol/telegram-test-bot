@@ -41,10 +41,10 @@ def main():
 					id_chat_handlers[message.chat_id] = \
 						ChatHandler(message.chat_id, bot, imgur_client)
 
-				handler = id_chat_handlers[message.chat_id]
+				chat_handler = id_chat_handlers[message.chat_id]
 
 				if(message.text[0] == '/'):
-					handler.execute(message)
+					chat_handler.execute(message)
 				else:
 					pass
 
