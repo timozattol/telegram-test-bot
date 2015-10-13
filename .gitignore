@@ -58,3 +58,7 @@ target/
 
 # Tokens
 tokens.py
+
+# Sublime-text
+*.sublime-project
+*.sublime-workspace
