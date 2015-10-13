@@ -56,6 +56,7 @@ class ChatHandler:
 			Available commands:
 			/help --> Show this message
 			/imgur --> Fetch an image from the frontpage of imgur
+			/imgur search some words --> Search an image on imgur based on "some words"
 			"""
 
 		self.__send_message(helpMessage)
