@@ -37,6 +37,15 @@ class ChatHandler:
 			self.current_gallery_index += 1
 			return img
 
+	def __search_imgur_image(self, words):
+		gallery = self.imgur_client.gallery_search(words, page=0)
+
+		# No image found
+		if len(gallery) == 0:
+			return None
+		else:
+			return gallery[0]
+
 	def __send_message(self, string):
 		self.bot.sendMessage(
 			chat_id=self.chat_id,
@@ -66,13 +75,26 @@ class ChatHandler:
 			self.__send_help_message()
 
 		# Imgur command
-		elif(message.text == "/imgur"):
-			img = self.__fetch_next_imgur_image()
+		elif(message.text.startswith("/imgur")):
+			args = message.text.split(" ")[1:]
 
-			response = img.title + "\n" + img.link if img else "No more image in gallery, shouldn't you go to work? ;)"
+			# No arguments
+			if len(args) == 0:
+				img = self.__fetch_next_imgur_image()
 
-			self.__send_message(response)
+				response = img.title + "\n" + img.link if img else "No more image in gallery, shouldn't you go to work? ;)"
+
+				self.__send_message(response)
+			# Search
+			elif args[0] == "search" and len(args) >= 2:
+				img = self.__search_imgur_image(args[1])
+
+				response = img.title + "\n" + img.link if img else "Sorry, your search lead to no result... :'("
+
+				self.__send_message(response)
+			else:
+				self.__send_help_message()
+
+		# Unknown command
 		else:
-			response = "Unfortunately, your command isn't supported yet.\n" + helpMessage
-
-			self.__send_message(response)
+			self.__send_help_message()
