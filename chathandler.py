@@ -76,22 +76,26 @@ class ChatHandler:
 
 		# Imgur command
 		elif(message.text.startswith("/imgur")):
-			args = message.text.split(" ")[1:]
-
-			# No arguments
-			if len(args) == 0:
+			if message.text == "/imgur":
 				img = self.__fetch_next_imgur_image()
 
 				response = img.title + "\n" + img.link if img else "No more image in gallery, shouldn't you go to work? ;)"
 
 				self.__send_message(response)
-			# Search
-			elif args[0] == "search" and len(args) >= 2:
-				img = self.__search_imgur_image(args[1])
+			elif message.text.startswith("/imgur "):
+				# Separates in three and discards first element "/imgur"
+				args = message.text.split(" ", 2)[1:]
+				
+				# Search
+				if args[0] == "search" and len(args) == 2:
+					img = self.__search_imgur_image(args[1])
 
-				response = img.title + "\n" + img.link if img else "Sorry, your search lead to no result... :'("
+					response = img.title + "\n" + img.link if img else "Sorry, your search lead to no result... :'("
 
-				self.__send_message(response)
+					self.__send_message(response)
+				# Unsupported command
+				else:
+					self.__send_help_message()
 			else:
 				self.__send_help_message()
 
