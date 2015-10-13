@@ -5,3 +5,4 @@ A testing purpose telegram bot, written in python using the [python-telegram-bot
 
 * `/help` Send help message
 * `/imgur` Send an image from the main gallery of imgur
+* `/imgur search some words` Search an image on imgur based on "some words"
