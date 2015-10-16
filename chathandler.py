@@ -71,18 +71,20 @@ class ChatHandler:
 		if message.chat_id != self.chat_id:
 			raise Exception("Message " + message.message_id + " was sent to wrong ChatHandler")
 
+		response = None
+
 		# Help command
 		if(message.text == "/help"):
-			self.__send_help_message()
+			response = None
 
 		# Imgur command
 		elif(message.text.startswith("/imgur")):
+
 			if message.text == "/imgur":
 				img = self.__fetch_next_imgur_image()
 
 				response = img.title + "\n" + img.link if img else "No more image in gallery, shouldn't you go to work? ;)"
 
-				self.__send_message(response)
 			elif message.text.startswith("/imgur "):
 				# Separates in three and discards first element "/imgur"
 				args = message.text.split(" ", 2)[1:]
@@ -92,14 +94,8 @@ class ChatHandler:
 					img = self.__search_imgur_image(args[1])
 
 					response = img.title + "\n" + img.link if img else "Sorry, your search lead to no result... :'("
-
-					self.__send_message(response)
-				# Unsupported command
-				else:
-					self.__send_help_message()
-			else:
-				self.__send_help_message()
-
-		# Unknown command
+				
+		if response:
+			self.__send_message(response)
 		else:
 			self.__send_help_message()
