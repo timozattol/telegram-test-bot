@@ -3,4 +3,4 @@ bot_token = 'INSERT_TOKEN_HERE'
 
 # Imgur API token
 imgur_client_id = 'INSERT_ID_HERE'
-imgue_client_secret = 'INSERT_SECRET_HERE'
+imgur_client_secret = 'INSERT_SECRET_HERE'
